@@ -1,6 +1,10 @@
 from django.db import models
 
 
+# table name in database => <app_name>_<model_name>
+from django.urls import reverse
+
+
 class Movie(models.Model):
     NOT_RATED = 0
     RATED_G = 1
@@ -19,5 +23,14 @@ class Movie(models.Model):
     runtime = models.PositiveIntegerField()
     website = models.URLField(blank=True)
 
+    class Meta:
+        ordering = ('-year', 'title')
+
     def __str__(self):
-        return '{} {}'.format(self.title, self.year)
+        return '{} ({})'.format(self.title, self.year)
+
+    def get_absolute_url(self):
+        return reverse('core:MovieDetail', args=[self.id])
+
+
+
