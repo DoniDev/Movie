@@ -23,7 +23,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'users.apps.UsersConfig',
+    'user.apps.UserConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -119,3 +119,5 @@ STATIC_URL = '/static/'
 INSTALLED_APPS += [
     'core.apps.CoreConfig',
 ]
+LOGIN_URL = 'LoginView'
+LOGIN_REDIRECT_URL = 'core:MovieList'
