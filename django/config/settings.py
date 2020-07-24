@@ -119,5 +119,6 @@ STATIC_URL = '/static/'
 INSTALLED_APPS += [
     'core.apps.CoreConfig',
 ]
-LOGIN_URL = 'LoginView'
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'core:MovieList'
+LOGOUT_REDIRECT_URL = 'user:login'
