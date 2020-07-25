@@ -18,4 +18,20 @@
             {{ object.get_rating_display }}
         </span>
     </div>
+    <div>
+        <h2>
+            Score: {{ object.score|default_if_none:"TBD" }}
+        </h2>
+    </div>
+    <div>
+        {% if vote_form %}
+            <form action="{{ vote_form_url }}" method="POST">
+                {% csrf_token %}
+                {{ vote_form.as_p }}
+                <button type="submit" class="btn btn-primary">Vote</button>
+            </form>
+         {% else %}
+            Log In to vote for this
+        {% endif %}
+    </div>
 {% endblock %}

@@ -1,5 +1,10 @@
+from django.conf import settings
 from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
+
+
+# from django.conf import settings
 
 
 class PersonManager(models.Manager):
@@ -20,6 +25,7 @@ class Person(models.Model):
     died = models.DateField(null=True, blank=True)
 
     objects = PersonManager()
+
     # objects = Manager()
 
     class Meta:
@@ -62,6 +68,11 @@ class MovieManager(models.Manager):
         )
         return qs
 
+    def all_with_related_persons_score(self):
+        qs = self.all_with_related_persons()
+        qs = qs.annotate(score=Sum('vote__value'))
+        return qs
+
 
 # table name in database => <app_name>_<model_name>
 class Movie(models.Model):
@@ -97,4 +108,33 @@ class Movie(models.Model):
         return reverse('core:MovieDetail', args=[self.id])
 
 
+class VoteManager(models.Manager):
+    def get_vote_or_unsaved_blank_vote(self, movie, user):
+        try:
+            return Vote.objects.get(movie=movie, user=user)
+        except Vote.DoesNotExist:
+            return Vote(movie=movie, user=user)
 
+
+class Vote(models.Model):
+    UP = 1
+    DOWN = -1
+    VALUE_CHOICES = (
+        (UP, 'Like'),
+        (DOWN, 'Dislike')
+    )
+
+    value = models.SmallIntegerField(choices=VALUE_CHOICES)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    voted_on = models.DateTimeField(auto_now=True)
+
+    objects = VoteManager()
+
+
+    def __str__(self):
+        return '{} {} {}'.format(self.value, self.user, self.movie.title)
+
+
+    class Meta:
+        unique_together = ('user', 'movie')
