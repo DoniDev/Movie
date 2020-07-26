@@ -73,6 +73,14 @@ class MovieManager(models.Manager):
         qs = qs.annotate(score=Sum('vote__value'))
         return qs
 
+    # def get_the_number_of_likes(self):
+    #     qs = self.all_with_related_persons().filter(vote__value=1).count()
+    #     return qs
+    #
+    # def get_the_number_of_dislikes(self):
+    #     qs = self.all_with_related_persons().filter(vote__value=-1).count()
+    #     return qs
+
 
 # table name in database => <app_name>_<model_name>
 class Movie(models.Model):

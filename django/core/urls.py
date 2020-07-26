@@ -1,5 +1,5 @@
 from django.urls import path
-from . views import (
+from .views import (
     MovieList,
     MovieDetail,
     PersonDetail,
@@ -10,7 +10,7 @@ from . views import (
 app_name = 'core'
 
 urlpatterns = [
-    path('movies/',MovieList.as_view(), name='MovieList'),
+    path('movies/', MovieList.as_view(), name='MovieList'),
     path('movie/<int:pk>/', MovieDetail.as_view(), name='MovieDetail'),
     path('movie/<int:movie_id>/vote/', CreateVote.as_view(), name='CreateVote'),
     path('movie/<int:movie_id>/vote/<int:pk>/', UpdateVote.as_view(), name='UpdateVote'),

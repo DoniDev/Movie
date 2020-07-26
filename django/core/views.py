@@ -42,9 +42,14 @@ class MovieDetail(DetailView):
             else:
                 vote_form_url = reverse('core:CreateVote', kwargs={'movie_id': self.object.id})
 
+            likes = self.object.vote_set.all().filter(value=1).count()
+            dislikes = self.object.vote_set.all().filter(value=-1).count()
+
             vote_form = VoteForm(instance=vote)
             ctx['vote_form'] = vote_form
             ctx['vote_form_url'] = vote_form_url
+            ctx['likes'] = likes
+            ctx['dislikes'] = dislikes
 
         return ctx
 
