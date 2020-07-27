@@ -139,10 +139,8 @@ class Vote(models.Model):
 
     objects = VoteManager()
 
-
     def __str__(self):
         return '{} {} {}'.format(self.value, self.user, self.movie.title)
-
 
     class Meta:
         unique_together = ('user', 'movie')

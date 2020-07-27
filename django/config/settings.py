@@ -120,6 +120,6 @@ INSTALLED_APPS += [
     'core.apps.CoreConfig',
 ]
 LOGIN_URL = 'user:login'
-LOGIN_REDIRECT_URL = 'user:login'
+LOGIN_REDIRECT_URL = 'core:MovieList'
 LOGOUT_REDIRECT_URL = 'user:login'
 

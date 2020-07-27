@@ -1,27 +1,26 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from . forms import VoteForm
-from . models import Movie, Person, Role
+from .forms import VoteForm
+from .models import Movie, Person, Role
 from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
     UpdateView,
 )
-from . models import Vote
+from .models import Vote
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
 )
 from django.core.exceptions import (
     PermissionDenied,
 )
-
-
+from django.http import HttpResponse
 
 
 class MovieList(ListView):
     model = Movie
-    paginate_by = 1
+    paginate_by = 10
 
 
 class MovieDetail(DetailView):
@@ -89,7 +88,9 @@ class UpdateVote(LoginRequiredMixin, UpdateView):
 
 class CreateVote(LoginRequiredMixin, CreateView):
     form_class = VoteForm
+    # model = Vote
 
+    # used to pre-populate a form with initial values before form get data values from the request
     def get_initial(self):
         initial = super().get_initial()
         initial['user'] = self.request.user.id
