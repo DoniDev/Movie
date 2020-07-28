@@ -1,49 +1,106 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{ object.title }} -- {{ block.super }}
+  {{ object.title }} - {{ block.super }}
 {% endblock %}
 
 {% block content %}
-    <h1>{{ object }}</h1>
-    <p class="lead">
-        {{ object.plot }}
-    </p>
+  <div class="col" >
+    <h1 >{{ object }}</h1 >
+    <p class="lead" >
+      {{ object.plot }}
+    </p >
+  </div >
+  <ul class="movie-image list-inline" >
+    {% for i in object.movieimage_set.all %}
+      <li class="list-inline-item" >
+        <img src="{{ i.image.url }}" >
+      </li >
+    {% endfor %}
+  </ul >
+  <p >Directed
+    by {{ object.director }}</p >
+  <p >Written
+    by {{ object.writers.all|unordered_list }}</p >
+  <h2 >Actors</h2 >
+  <ul >
+    {% for credit in object.role_set.all %}
+      <li >
+        <a href="{% url 'core:PersonDetail' pk=credit.person.id %}" >
+          {{ credit.person }}: {{ credit.billing }}
+        </a >
+      </li >
+    {% endfor %}
+  </ul >
 {% endblock %}
 
 {% block sidebar %}
-    <div>
-        This movie is rated:
-        <span class="badge badge-primary">
-            {{ object.get_rating_display }}
-        </span>
-    </div>
-    <div>
-        <h2>
-            Score: {{ object.score|default_if_none:"TBD" }}
+  <div >
+    This movie is rated:
+    <span class="badge badge-primary" >
+      {{ object.get_rating_display }}
+    </span >
+  </div >
+  {% if image_form %}
+    <div >
+      <h2 >Upload New Image</h2 >
+      <form method="post"
+            enctype="multipart/form-data"
+            action="{% url 'core:MovieImageUpload' movie_id=object.id %}" >
+        {% csrf_token %}
+        {{ image_form.as_p }}
+        <p >
+          <button
+              class="btn btn-primary" >
+            Upload
+          </button >
+        </p >
+      </form >
+    </div >
+  {% endif %}
+  <div >
+    <h2 >
+      Score:
+      {{ object.score|default_if_none:"TBD" }}
+    </h2 >
+  </div >
+  <div >
+    {% if vote_form %}
+      <form
+          method="POST"
+          action="{{ vote_form_url }}" >
+        {% csrf_token %}
+        {{ vote_form.as_p }}
+        <button
+            class="btn btn-primary" >
+          Vote
+        </button >
+      </form >
+    {% else %}
+      <p >Log in to vote for this
+        movie</p >
+    {% endif %}
+      <br>
+    {% if likes %}
+        <button class="btn btn-success" type="button">Like{{ likes|pluralize }} : {{ likes }}</button>
+    {% else %}
+        <button class="btn btn-success" type="button">Likes : 0</button>
+    {% endif %}
+    {% if dislikes %}
+        <button class="btn btn-danger" type="button">Dislike{{ dislikes|pluralize }}: {{ dislikes }}</button>
+    {% else %}
+        <button class="btn btn-danger" type="button">Dislikes: 0</button>
+    {% endif %}
 
-        </h2>
-    </div>
-    <div>
-        {% if vote_form %}
-            <form action="{{ vote_form_url }}" method="POST">
-                {% csrf_token %}
-                {{ vote_form.as_p }}
-                <button type="submit" class="btn btn-primary">Vote</button>
-            </form>
-         {% else %}
-            Log In to vote for this
-        {% endif %}
-        <br>
-        {% if likes %}
-            <button class="btn btn-success" type="button">Like{{ likes|pluralize }} : {{ likes }}</button>
-        {% else %}
-            <button class="btn btn-success" type="button">Likes : 0</button>
-        {% endif %}
-        {% if dislikes %}
-            <button class="btn btn-danger" type="button">Dislike{{ dislikes|pluralize }}: {{ dislikes }}</button>
-        {% else %}
-            <button class="btn btn-danger" type="button">Dislikes: 0</button>
-        {% endif %}
-    </div>
+
+  </div >
+
+
 {% endblock %}
+
+
+
+
+
+
+

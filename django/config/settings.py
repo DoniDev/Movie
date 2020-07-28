@@ -123,3 +123,6 @@ LOGIN_URL = 'user:login'
 LOGIN_REDIRECT_URL = 'core:MovieList'
 LOGOUT_REDIRECT_URL = 'user:login'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '../media_root')
+

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .forms import VoteForm
+from .forms import VoteForm, MovieImageForm
 from .models import Movie, Person, Role
 from django.views.generic import (
     ListView,
@@ -49,8 +49,14 @@ class MovieDetail(DetailView):
             ctx['vote_form_url'] = vote_form_url
             ctx['likes'] = likes
             ctx['dislikes'] = dislikes
+            ctx['image_form'] = self.movie_image_form
 
         return ctx
+
+    def movie_image_form(self):
+        if self.request.user.is_authenticated:
+            return MovieImageForm()
+        return None
 
 
 class PersonDetail(DetailView):
@@ -112,3 +118,24 @@ class CreateVote(LoginRequiredMixin, CreateView):
             kwargs={'pk': movie_id})
         return redirect(
             to=movie_detail_url)
+
+
+
+
+class MovieUploadView(LoginRequiredMixin, CreateView):
+    form_class = MovieImageForm
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['user'] = self.request.user.id
+        initial['movie'] = self.kwargs['movie_id']
+        return initial
+
+    def get_success_url(self):
+        movie_id = self.kwargs['movie_id']
+        movie_detail_url = reverse('core:MovieDetail', kwargs={"pk": movie_id})
+        return movie_detail_url
+
+
+
+
